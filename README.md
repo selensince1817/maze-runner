@@ -1,7 +1,5 @@
 # Maze Runner – Optimal & Safe Software Traversal
 
-![results](Code_Generated_Image.png)
-
 ## Overview
 
 A scalable synthetic task family for evaluating LLM agents on structured navigation with prerequisites and safety constraints.
