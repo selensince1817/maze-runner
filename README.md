@@ -42,9 +42,10 @@ Requires Python 3.12+. Uses [uv](https://github.com/astral-sh/uv) for dependenci
 
 ```bash
 uv sync
+echo "OPENROUTER_API_KEY=your-key-here" > .env
 ```
 
-Add your OpenRouter API key to a `.env` file:
+Ensure you add OpenRouter API key to a `.env` file:
 
 ```
 OPENROUTER_API_KEY=
@@ -117,7 +118,9 @@ uv run python -m src.fsm_navigator.cli gen \
 
 ## Results
 
-Evaluated on `google/gemini-3-flash-preview`, 20 trials per problem:
+Evaluated on `google/gemini-3-flash-preview`, 5 trials per problem:
+
+![results](Code_Generated_Image.png)
 
 | Profile     | Pass Rate | Avg Optimal Path | Step Overhead |
 | ----------- | --------- | ---------------- | ------------- |
@@ -125,6 +128,6 @@ Evaluated on `google/gemini-3-flash-preview`, 20 trials per problem:
 | Linear (medium)      | 66%       | 4.9 steps        | +3.63 steps   |
 | AWS Console (hard) | 14%       | 7.6 steps        | +11.9 steps   |
 
-The model handles shallow prerequisite chains (Gmail) well but degrades sharply as flag depth and destructive action density increase (AWS Console) — confirming the task scales with structural complexity and sits in the 1090% target range.
+The model handles shallow prerequisite chains (Gmail) well but degrades sharply as flag depth and destructive action density increase (AWS Console) — confirming the task scales with structural complexity and sits in the 10-90% target range.
 
-![results](Code_Generated_Image.png)
+
