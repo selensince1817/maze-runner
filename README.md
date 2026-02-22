@@ -24,9 +24,9 @@ This isolates three specific failure modes in a verifiable, scalable way:
 | Irreversible actions  | Plausible-looking transitions marked `corrupts = true`        |
 
 
-**Performance range:** Evaluated on `google/gemini-3-flash-preview` via OpenRouter, pass rate ranges from **78% down to 14%** — within the 10–90% target band on most settings and importantly non-trivial / non-impossible overall. The model handles simple prerequisite chains reliably but degrades sharply as flag depth, noise, and destructive action density increase.
+**Performance range:** Evaluated on `google/gemini-3-flash-preview` via OpenRouter, pass rate ranges from **78% down to 14%** – within the 10–90% target band on most settings and importantly non-trivial / non-impossible overall. The model handles simple prerequisite chains reliably but degrades sharply as flag depth, noise, and destructive action density increase.
 
-**Why it's a good training target**: benchmark targets a specific functional slice of LLM agent competence: goal-directed traversal (near-optimal action sequencing in a structured graph) and non-destructiveness (avoiding irreversible actions). These are partially separable from general language ability or UI-comprehension — community can stress and improve them independently. The abstraction is deliberately schema-first — screens → states, UI actions → transitions, latent setup → flags — so new software profiles can be authored by varying structural parameters rather than building a UI simulator. The verifier yields three clean training signals: correctness, efficiency vs. BFS-optimal, and safety.
+**Why it's a good training target**: benchmark targets a specific functional slice of LLM agent competence: goal-directed traversal (near-optimal action sequencing in a structured graph) and non-destructiveness (avoiding irreversible actions). These are partially separable from general language ability or UI-comprehension. The abstraction is deliberately schema-first so new software profiles can be authored by varying structural parameters and tailoring generation style rather than building a UI simulator/trainer for LLMs. 
 
 The environment yields three training-relevant signals:
 
@@ -56,7 +56,7 @@ After generation, BFS is run over the full product state space `(current_screen,
 Problems are stored as JSONL, one JSON object per line.
 
 **What a problem looks like as a training example:**
-Each problem is an `(input, label)` pair. The **input** is a system prompt describing the rules plus a user message containing the start state, goal state, available flags, and the full transition graph. The **golden label** is the BFS-optimal action sequence. The verifier provides a binary pass/fail signal plus a structured failure reason (missing flag, corrupting action, wrong terminal state), which can be used for SFT filtering or as a dense reward signal in RLVR.
+Each problem is an `(input, label)` pair. The **input** is a system prompt describing the rules plus a user message containing the start state, goal state, available flags, and the full transition graph. The **golden label** is the BFS-optimal action sequence. The verifier provides a binary pass/fail signal plus a structured failure reason (missing flag, corrupting action, wrong terminal state).
 
 ---
 
@@ -111,7 +111,7 @@ uv run python -m src.fsm_navigator.cli gen \
 **Evaluate a model**
 
 ```bash
-uv run python -m src.fsm_navigator.cli eval --problems data/problems.jsonl --n 20
+uv run python -m src.fsm_navigator.cli eval --problems data/problems.jsonl --n 5
 ```
 
 Output per problem includes pass rate, average steps on passing vs failing trials, and overhead vs BFS optimal.
@@ -126,7 +126,7 @@ uv run python -m src.fsm_navigator.cli check --problems data/problems.jsonl
 
 ## Difficulty profiles
 
-Profiles are parameter presets that structurally approximate real software workflows — not pixel-level simulations, but rough emulations of screen count, branching, prerequisite depth, and destructive action density.
+Profiles are parameter presets that structurally approximate real software workflows – not pixel-level simulations, but rough emulations of screen count, branching, prerequisite depth, and destructive action density.
 
 
 | Profile     | States | Transitions | Flags | Clears | Corrupts | Difficulty |
@@ -139,19 +139,19 @@ Profiles are parameter presets that structurally approximate real software workf
 **Generate each profile:**
 
 ```bash
-# Gmail — easy
+# Gmail: easy
 uv run python -m src.fsm_navigator.cli gen \
-  --num-problems 5 --max-states 8 --max-transitions 14 \
+  --num-problems 10 --max-states 8 --max-transitions 14 \
   --max-flags 1 --max-clears 1 --num-corrupts 1 \
   --output-dir data/gmail.jsonl
 
-# Linear — medium
+# Linear - medium
 uv run python -m src.fsm_navigator.cli gen \
   --num-problems 10 --max-states 14 --max-transitions 19 \
   --max-flags 3 --max-clears 1 --num-corrupts 0 \
   --output-dir data/linear.jsonl
 
-# AWS Console — hard
+# AWS Console - hard
 uv run python -m src.fsm_navigator.cli gen \
   --num-problems 10 --max-states 22 --max-transitions 32 \
   --max-flags 8 --max-clears 5 --num-corrupts 2 \
