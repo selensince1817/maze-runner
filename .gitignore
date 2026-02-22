@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+dist/
+
+# Env
+.env
+
+# macOS
+.DS_Store
+
+# uv
+.python-version
+
+.claude

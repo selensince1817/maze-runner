@@ -1,0 +1,75 @@
+import random
+
+from src.fsm_navigator.types import Problem, Transition
+
+
+def generate_problem(
+    max_states: int,
+    max_transitions: int,
+    max_flags: int,
+    max_clears: int,
+    num_corrupts: int,
+) -> Problem:
+    states = [f"state_{i}" for i in range(max_states)]
+    random.shuffle(states)
+
+    start_state = states[0]
+    goal_state = states[-1]
+
+    # Golden route
+    transitions = []
+    for i in range(len(states) - 1):
+        transitions.append(
+            Transition(
+                from_state=states[i],
+                action=f"action_{i}",
+                to_state=states[i + 1],
+            )
+        )
+
+    # extra transitions (noise)
+    max_extra_transitions = int(max_transitions * 0.7)
+    for i in range(max_extra_transitions):
+        from_state_rand, to_state_rand = random.sample(states, k=2)
+        transitions.append(
+            Transition(
+                from_state=from_state_rand,
+                action=f"action_{i + len(states) - 1}",
+                to_state=to_state_rand,
+            )
+        )
+
+    golden_count = len(states) - 1
+    noise_transitions = transitions[golden_count:]
+
+    # flag universe and golden-path set/require pairs
+    flags = {f"flag_{i}" for i in range(max_flags)}
+    for flag in flags:
+        if golden_count == 0:
+            continue
+        set_idx = random.randint(0, golden_count - 1)
+        transitions[set_idx].sets_flags.add(flag)
+        if golden_count >= 2 and set_idx < golden_count - 1:
+            require_idx = random.randint(set_idx + 1, golden_count - 1)
+            transitions[require_idx].requires_flags.add(flag)
+
+    # soft destructive: assign clears_flags to random noise transitions
+    if noise_transitions and flags:
+        for _ in range(max_clears):
+            t = random.choice(noise_transitions)
+            t.clears_flags.add(random.choice(list(flags)))
+
+    # hard destructive: mark num_corrupts noise transitions as corrupts
+    if noise_transitions:
+        corrupt_candidates = noise_transitions.copy()
+        random.shuffle(corrupt_candidates)
+        for t in corrupt_candidates[:num_corrupts]:
+            t.corrupts = True
+
+    return Problem(
+        states=set(states),
+        flags=flags,
+        transitions=transitions,
+        start_state=start_state,
+        goal_state=goal_state,
+    )
