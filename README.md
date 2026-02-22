@@ -1,4 +1,4 @@
-# Maze Runner – Synthetic Benchmark for Optimal & Safe Software Traversal
+# Maze Runner – Optimal & Safe Software Traversal
 
 ## Overview
 
