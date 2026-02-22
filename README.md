@@ -1,12 +1,12 @@
-# Maze Runner – Optimal & Safe Software Traversal
+# Maze Runner - Optimal & Safe Software Traversal
 
 A scalable synthetic task family for evaluating LLM agents on structured navigation with prerequisites and safety constraints. The core idea is to model "software use" as a **finite-state interface**:
 
-- **States** – screens or application views
-- **Transitions** – actions available from a given screen
-- **Flags** – latent configuration state (e.g. `email_verified`, `2fa_enabled`) that must be set before certain transitions are allowed
-- **Clears** – some transitions reset flags, requiring the agent to redo setup (soft-destructive)
-- **Corrupts** – some transitions cause immediate, irreversible failure (hard-destructive)
+- **States** - screens or application views
+- **Transitions** - actions available from a given screen
+- **Flags** - latent configuration state (e.g. `email_verified`, `2fa_enabled`) that must be set before certain transitions are allowed
+- **Clears** - some transitions reset flags, requiring the agent to redo setup (soft-destructive)
+- **Corrupts** - some transitions cause immediate, irreversible failure (hard-destructive)
 
 **The agent receives the full graph and must output an ordered action sequence that reaches the goal state while satisfying all flag prerequisites and avoiding corrupting actions.**
 
@@ -16,7 +16,7 @@ A scalable synthetic task family for evaluating LLM agents on structured navigat
 | Soft consequences     | Noise transitions with `clears_flags` that undo earlier setup |
 | Irreversible actions  | Plausible-looking transitions marked `corrupts = true`        |
 
-**Performance:** Evaluated on `google/gemini-3-flash-preview` via OpenRouter, pass rate ranges from **78% down to 14%** — within the 10–90% target band. The model handles simple prerequisite chains reliably but degrades sharply as flag depth, noise, and destructive action density increase.
+**Performance:** Evaluated on `google/gemini-3-flash-preview` via OpenRouter, pass rate ranges from **78% down to 14%** — within the 10-90% target band. The model handles simple prerequisite chains reliably but degrades sharply as flag depth, noise, and destructive action density increase.
 
 **Why it's a good training target:** The benchmark isolates goal-directed traversal and non-destructiveness — partially separable from general language ability. The abstraction is schema-first so new software profiles can be authored by varying structural parameters rather than building a UI simulator. The verifier yields three training signals (accuracy, efficiency vs BFS-optimal, safety) that map naturally to dense reward shaping for RLVR or filtered SFT.
 
@@ -28,9 +28,9 @@ A scalable synthetic task family for evaluating LLM agents on structured navigat
 
 Each problem is generated in three stages:
 
-1. **Golden path** – A chain of `N` shuffled states with a guaranteed path from start to goal. Flags are set on early transitions and required on later ones, ensuring the backbone is always solvable.
-2. **Noise transitions** – Random transitions between arbitrary states that increase the search space. `clears_flags` and `corrupts` are assigned exclusively to noise, so the backbone stays safe.
-3. **BFS validation** – BFS over the full product state space `(screen, active_flags)` confirms solvability and computes optimal path length. Problems outside a specified step range are discarded.
+1. **Golden path**  A chain of `N` shuffled states with a guaranteed path from start to goal. Flags are set on early transitions and required on later ones, ensuring the backbone is always solvable.
+2. **Noise transitions** - Random transitions between arbitrary states that increase the search space. `clears_flags` and `corrupts` are assigned exclusively to noise, so the backbone stays safe.
+3. **BFS validation** - BFS over the full product state space `(screen, active_flags)` confirms solvability and computes optimal path length. Problems outside a specified step range are discarded.
 
 Each problem is an `(input, label)` pair. The **input** is a system prompt plus the start/goal states, flags, and transition graph. The **golden label** is the BFS-optimal action sequence. The verifier provides pass/fail plus a structured failure reason (missing flag, corrupting action, wrong terminal state).
 
@@ -85,7 +85,7 @@ uv run python -m src.fsm_navigator.cli check --problems data/problems.jsonl
 
 ## Difficulty profiles
 
-Parameter presets that structurally approximate real software workflows:
+Parameter presets that structurally ***approximate*** real software workflows:
 
 | Profile     | States | Transitions | Flags | Clears | Corrupts |
 | ----------- | ------ | ----------- | ----- | ------ | -------- |
@@ -121,10 +121,10 @@ Evaluated on `google/gemini-3-flash-preview`, 20 trials per problem:
 
 | Profile     | Pass Rate | Avg Optimal Path | Step Overhead |
 | ----------- | --------- | ---------------- | ------------- |
-| Gmail       | 78%       | 2.2 steps        | +1.45 steps   |
-| Linear      | 66%       | 4.9 steps        | +3.63 steps   |
-| AWS Console | 14%       | 7.6 steps        | +11.9 steps   |
+| Gmail (easy)       | 78%       | 2.2 steps        | +1.45 steps   |
+| Linear (medium)      | 66%       | 4.9 steps        | +3.63 steps   |
+| AWS Console (hard) | 14%       | 7.6 steps        | +11.9 steps   |
 
-The model handles shallow prerequisite chains (Gmail) well but degrades sharply as flag depth and destructive action density increase (AWS Console) — confirming the task scales with structural complexity and sits in the 10–90% target range.
+The model handles shallow prerequisite chains (Gmail) well but degrades sharply as flag depth and destructive action density increase (AWS Console) — confirming the task scales with structural complexity and sits in the 1090% target range.
 
 ![results](Code_Generated_Image.png)
