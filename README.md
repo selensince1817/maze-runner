@@ -113,5 +113,3 @@ Evaluated on `google/gemini-3-flash-preview` using 5 trials per problem. The ver
 | **Gmail (easy)** | 78% | 2.2 steps | +1.45 steps |
 | **Linear (medium)** | 66% | 4.9 steps | +3.63 steps |
 | **AWS Console (hard)** | 14% | 7.6 steps | +11.9 steps |
-
-**Conclusion:** The benchmark effectively isolates goal-directed traversal. As flag depth and destructive action density scale, the model struggles significantly with maintaining safe, efficient paths, validating this task as an excellent target for synthetic RLVR data generation.
