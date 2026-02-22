@@ -1,5 +1,9 @@
 # maze-runner: Optimal & Safe Software Traversal for LLMs via FSM
 
+<p align="center">
+  <img width="500" alt="image" src="https://github.com/user-attachments/assets/56cdc260-47c9-47ce-961c-bd3f90d49a76" />
+</p>
+
 ## 1. Overview & Task Selection
 
 A scalable synthetic task family for evaluating LLM agents on structured navigation with prerequisites and safety constraints. The core idea is to model "software use" as a **finite-state interface**:
