@@ -8,7 +8,7 @@ A scalable synthetic task family for evaluating LLM agents on structured navigat
 - **Clears** – some transitions reset flags, requiring the agent to redo setup (soft-destructive)
 - **Corrupts** – some transitions cause immediate, irreversible failure (hard-destructive)
 
-The agent receives the full graph and must output an ordered action sequence that reaches the goal state while satisfying all flag prerequisites and avoiding corrupting actions.
+**The agent receives the full graph and must output an ordered action sequence that reaches the goal state while satisfying all flag prerequisites and avoiding corrupting actions.**
 
 | Failure mode          | How it's tested                                               |
 | --------------------- | ------------------------------------------------------------- |
