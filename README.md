@@ -1,9 +1,8 @@
-# Maze Runner: Optimal & Safe Software Traversal
-**Applied AI Engineer Take-Home Submission**
+# maze-runner: Optimal & Safe Software Traversal for LLMs via FSM
 
 ## 1. Overview & Task Selection
 
-This project provides a scalable synthetic task family for evaluating and training LLM agents on structured navigation, prerequisite planning, and safety constraints. 
+A scalable synthetic task family for evaluating LLM agents on structured navigation with prerequisites and safety constraints. The core idea is to model "software use" as a **finite-state interface**:
 
 * **The Model (`y`):** `google/gemini-3-flash-preview` (via OpenRouter)
 * **The Task (`x`):** Goal-directed traversal of finite-state software interfaces without triggering catastrophic actions. 
@@ -28,7 +27,7 @@ The agent receives a full JSON graph of the environment and must output an order
 * **Clears (Soft-destructive):** Transitions that reset flags, forcing the agent to redo earlier setup steps.
 * **Corrupts (Hard-destructive):** Transitions that cause immediate, irreversible failure (e.g., "Delete Account").
 
-### What we test
+### What I test
 | Failure Mode | How it is Tested |
 | :--- | :--- |
 | **Prerequisite ordering** | Transitions with `requires_flags` that block premature progression. |
