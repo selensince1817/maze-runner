@@ -11,9 +11,9 @@ class Transition(BaseModel):
     corrupts: bool = False
 
 
-class Problem(BaseModel):
-    states: set[str]
-    flags: set[str] = set()
+class Problem(BaseModel): # TODO: Remove the redundant fields (stages, flags) – can be inferred from Transitions
+    states: set[str] 
+    flags: set[str] = set() 
     transitions: list[Transition]
     start_state: str
     goal_state: str
@@ -30,3 +30,6 @@ class VerifyResult(BaseModel):
 
 class Solution(BaseModel):
     actions: list[str]
+
+    def __len__(self) -> int: 
+        return len(self.actions)

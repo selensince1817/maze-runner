@@ -41,7 +41,7 @@ def gen(
     Use --min-steps / --max-steps to filter by BFS optimal path length.
     --max-steps 0 means no upper limit.
     """
-    Path(output_dir).parent.mkdir(parents=True, exist_ok=True)
+    Path(output_dir).parent.mkdir(parents=True, exist_ok=True) # TODO: Define absolut root path in config.py and use it here
     accepted = 0
     attempts = 0
     total_steps = 0

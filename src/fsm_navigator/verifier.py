@@ -3,7 +3,7 @@ from collections import deque
 from src.fsm_navigator.types import Problem, VerifyResult
 
 
-def verify_problem(problem: Problem, solution: list[str]) -> VerifyResult:
+def verify_problem(problem: Problem, solution: list[str]) -> VerifyResult: # TODO: Pass Pydantic Solution model instead
     current_state = problem.start_state
     active_flags: set[str] = set()
 
